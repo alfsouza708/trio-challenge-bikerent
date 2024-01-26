@@ -5,7 +5,7 @@ import { defineComponent } from 'vue'
 import { LoadingSpinner } from '@/components/loading'
 import { BikeImageSelector, BikeSpecs, type BikeSpecsProps, BikePrice, BikeBookmark } from '@/components/bike'
 import { Chip } from '@/components/chip'
-import { BookingAddressMap, BookingPricing } from '@/components/booking'
+import { BookingAddressMap, BookingPricing, BookingDate } from '@/components/booking'
 import { CurrencyCode } from '@/core/config'
 
 import { BreadcrumbsLayout } from '@/components/layout'
@@ -22,6 +22,7 @@ export default defineComponent({
     Chip,
     BookingAddressMap,
     BookingPricing,
+    BookingDate,
     BikeBookmark,
     NotFound
   },
@@ -36,7 +37,8 @@ export default defineComponent({
     isLoading: false,
     currency: CurrencyCode.EUR,
     mockAddress: '745 Atlantic Ave, Boston, MA 02111, United States',
-    isBookmarked: false
+    isBookmarked: false,
+    isDateSelected: false
   }),
   computed: {
     ...mapState(useBikeStore, ['getBikeById']),
@@ -145,13 +147,20 @@ export default defineComponent({
 
         <div>
           <div class="card p-8">
-            <h3 class="text-base mb-4">Booking Overview</h3>
+            <div class="flex justify-center items-center flex-col">
+              <h2 class="self-start mb-4">Select date and time</h2>
+              <booking-date class="self-start" @update:date="isDateSelected = $event" />
+            </div>
 
-            <div class="divider" />
+            <div v-if="isDateSelected">
+              <h3 class="text-base mb-4">Booking Overview</h3>
 
-            <booking-pricing :price="data!.rate" :currency="currency" class="mb-8" />
+              <div class="divider" />
 
-            <button class="button button--primary w-full py-5" @click="handleAddBooking">Add to booking</button>
+              <booking-pricing :price="data!.rate" :currency="currency" class="mb-8" />
+
+              <button class="button button--primary w-full py-5" @click="handleAddBooking">Add to booking</button>
+            </div>
           </div>
         </div>
       </div>
