@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import VueDatePicker from '@vuepic/vue-datepicker'
+import moment from 'moment'
 import '@vuepic/vue-datepicker/dist/main.css'
 
 export default defineComponent({
@@ -9,14 +10,21 @@ export default defineComponent({
   emits: ['update:date'],
   data() {
     return {
-      date: null
+      date: null,
+      selecting: false
+    }
+  },
+  computed: {
+    minDate() {
+      return moment().toDate()
+    },
+    maxDate() {
+      return moment().add(3, 'M').toDate()
     }
   },
   watch: {
-    date() {
-      if (this.date) {
-        this.$emit('update:date', true)
-      }
+    selecting() {
+      this.date && !this.selecting ? this.$emit('update:date', true) : this.$emit('update:date', false)
     }
   }
 })
@@ -32,8 +40,15 @@ export default defineComponent({
       range
       month-name-format="long"
       :hide-navigation="['time']"
-      :min-date="new Date()"
-      :year-range="[new Date().getFullYear(), new Date().getFullYear() + 1]"
+      :min-date="minDate"
+      :max-date="maxDate"
+      prevent-min-max-navigation
+      @range-start="() => (selecting = true)"
+      @range-end="
+        () => {
+          if (selecting) selecting = false
+        }
+      "
     />
     <p>{{ date }}</p>
   </section>
