@@ -11,6 +11,11 @@ import { CurrencyCode } from '@/core/config'
 import { BreadcrumbsLayout } from '@/components/layout'
 import { NotFound } from '@/components/error'
 
+interface DatePickerData {
+  isSelected: boolean
+  dateToRent: any
+}
+
 export default defineComponent({
   name: 'BikeDetailsView',
   components: {
@@ -38,7 +43,8 @@ export default defineComponent({
     currency: CurrencyCode.EUR,
     mockAddress: '745 Atlantic Ave, Boston, MA 02111, United States',
     isBookmarked: false,
-    isDateSelected: false
+    isDateSelected: false,
+    dateToRent: []
   }),
   computed: {
     ...mapState(useBikeStore, ['getBikeById']),
@@ -75,7 +81,13 @@ export default defineComponent({
     }
   },
   methods: {
-    ...mapActions(useBikeStore, { fetchBikeList: 'fetchList' }),
+    ...mapActions(useBikeStore, { fetchBikeList: 'fetchList', fetchBikeAmount: 'fetchAmount' }),
+
+    handleEmit({ isSelected, dateToRent }: DatePickerData) {
+      this.isDateSelected = isSelected
+      this.dateToRent = dateToRent
+    },
+
     handleAddBooking() {
       // TODO: add booking action
 
@@ -149,11 +161,13 @@ export default defineComponent({
           <div class="card p-8">
             <div class="flex justify-center items-center flex-col">
               <h2 class="self-start mb-4">Select date and time</h2>
-              <booking-date class="self-start" @update:date="isDateSelected = $event" />
+              <booking-date class="self-start" @update:date="handleEmit" />
             </div>
 
-            <div v-if="isDateSelected">
+            <div v-if="isDateSelected" class="mt-5">
               <h3 class="text-base mb-4">Booking Overview</h3>
+
+              <p>{{ dateToRent }}</p>
 
               <div class="divider" />
 

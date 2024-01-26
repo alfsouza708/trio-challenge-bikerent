@@ -24,7 +24,16 @@ export default defineComponent({
   },
   watch: {
     selecting() {
-      this.date && !this.selecting ? this.$emit('update:date', true) : this.$emit('update:date', false)
+      this.date && !this.selecting
+        ? this.$emit('update:date', { isSelected: true, dateToRent: this.formatDates(this.date) })
+        : this.$emit('update:date', { isSelected: false, dateToRent: [] })
+    }
+  },
+  methods: {
+    formatDates(date: Date[]) {
+      if (date) {
+        return date.map((date) => moment(date).format('YYYY-MM-DD'))
+      }
     }
   }
 })
@@ -50,7 +59,6 @@ export default defineComponent({
         }
       "
     />
-    <p>{{ date }}</p>
   </section>
 </template>
 

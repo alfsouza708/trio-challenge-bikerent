@@ -35,6 +35,16 @@ export default defineStore({
           [i.id]: i
         }
       })
+    },
+
+    /**
+     * return amount for possible rent
+     */
+    async fetchAmount(details: bike.BikeRentDetails) {
+      const result = await bike.amount(details)
+
+      // eslint-disable-next-line no-console
+      console.log(`FETCHED THIS AMOUNT -> ${result}`)
     }
   }
 })

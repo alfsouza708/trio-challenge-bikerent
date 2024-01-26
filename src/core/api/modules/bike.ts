@@ -58,3 +58,13 @@ export async function rent(details: BikeRentDetails): Promise<BikeRent> {
 export async function returns(details: BikeReturnDetails): Promise<void> {
   await client.post('bikes/return', details)
 }
+
+/**
+ * Return amount for possible rent
+ * @param details
+ */
+export async function amount(details: BikeRentDetails): Promise<BikeRent> {
+  const { data } = await client.post<BikeRent>('amount', details)
+
+  return data
+}
