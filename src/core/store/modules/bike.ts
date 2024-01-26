@@ -43,8 +43,7 @@ export default defineStore({
     async fetchAmount(details: bike.BikeRentDetails) {
       const result = await bike.amount(details)
 
-      // eslint-disable-next-line no-console
-      console.log(`FETCHED THIS AMOUNT -> ${result}`)
+      return result
     }
   }
 })

@@ -1,12 +1,14 @@
 <script lang="ts">
 import { useBikeStore, mapActions, mapState } from '@/core/store'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { BikeRent, BikeRentDetails } from '@/core/api/modules/typings/bike'
 import { defineComponent } from 'vue'
 
 import { LoadingSpinner } from '@/components/loading'
 import { BikeImageSelector, BikeSpecs, type BikeSpecsProps, BikePrice, BikeBookmark } from '@/components/bike'
 import { Chip } from '@/components/chip'
 import { BookingAddressMap, BookingPricing, BookingDate } from '@/components/booking'
-import { CurrencyCode } from '@/core/config'
+import { CurrencyCode, USER_ID } from '@/core/config'
 
 import { BreadcrumbsLayout } from '@/components/layout'
 import { NotFound } from '@/components/error'
@@ -44,7 +46,8 @@ export default defineComponent({
     mockAddress: '745 Atlantic Ave, Boston, MA 02111, United States',
     isBookmarked: false,
     isDateSelected: false,
-    dateToRent: []
+    dateToRent: [],
+    rentAmountDetails: {}
   }),
   computed: {
     ...mapState(useBikeStore, ['getBikeById']),
@@ -54,10 +57,13 @@ export default defineComponent({
     id() {
       const { id } = this.$route.params || {}
 
-      return Number(id) || null
+      return Number(id)
     },
     data() {
       return (this.id && this.getBikeById(this.id)) || null
+    },
+    rentDetails(): BikeRentDetails {
+      return { bikeId: this.id, userId: parseInt(USER_ID), dateFrom: this.dateToRent[0], dateTo: this.dateToRent[1] }
     },
     images() {
       return this.data?.imageUrls || []
@@ -83,9 +89,13 @@ export default defineComponent({
   methods: {
     ...mapActions(useBikeStore, { fetchBikeList: 'fetchList', fetchBikeAmount: 'fetchAmount' }),
 
-    handleEmit({ isSelected, dateToRent }: DatePickerData) {
+    async handleEmit({ isSelected, dateToRent }: DatePickerData) {
       this.isDateSelected = isSelected
       this.dateToRent = dateToRent
+
+      if (this.isDateSelected && this.dateToRent) {
+        this.rentAmountDetails = await this.fetchBikeAmount(this.rentDetails)
+      }
     },
 
     handleAddBooking() {
@@ -171,7 +181,11 @@ export default defineComponent({
 
               <div class="divider" />
 
-              <booking-pricing :price="data!.rate" :currency="currency" class="mb-8" />
+              <booking-pricing
+                :rent-amount-details="(rentAmountDetails as BikeRent)"
+                :currency="currency"
+                class="mb-8"
+              />
 
               <button class="button button--primary w-full py-5" @click="handleAddBooking">Add to booking</button>
             </div>
