@@ -181,7 +181,7 @@ export default defineComponent({
         </div>
 
         <div>
-          <div v-if="isBikeRented" class="card p-8">
+          <div v-if="!isBikeRented" class="card p-8">
             <div class="flex justify-center items-center flex-col">
               <h2 class="self-start mb-4">Select date and time</h2>
               <booking-date class="self-start" @update:date="handleEmit" />

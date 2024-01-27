@@ -65,22 +65,24 @@ export default defineComponent({
 <style lang="scss">
 :root {
   --dp-font-family: 'Mont';
-  --dp-border-radius: 1.5rem;
-  --dp-cell-size: 3.5rem;
+  --dp-border-radius: 40px;
+  --dp-cell-size: 40px;
   --dp-menu-min-width: 375px;
-  --dp-cell-padding: 16px;
+  --dp-cell-padding: 12px;
+  --dp-menu-padding: 24px 26px;
 }
 
 .dp__theme_light {
   --dp-background-color: #1f49d1;
   --dp-text-color: #ffffff;
+  --dp-disabled-color-text: rgba(255, 255, 255, 0.5);
   --dp-icon-color: #ffffff;
   --dp-primary-color: #577cdd;
   --dp-border-color-hover: #ffffff;
   --dp-hover-icon-color: #1f49d1;
   --dp-hover-text-color: #1f49d1;
   --dp-range-between-dates-background-color: var(--dp-hover-color, #c1cff2);
-  --dp-disabled-color: #ededed;
+  --dp-disabled-color: rgba(0, 0, 0, 0);
 }
 
 .dp__month_year_row {
@@ -90,65 +92,61 @@ export default defineComponent({
     border-radius: 1.5rem;
   }
 
-  button[aria-label='Previous month'] {
+  .dp--arrow-btn-nav {
     display: flex;
     justify-content: center;
     align-items: center;
-    order: 1;
-    width: 100px;
-    height: 100px;
 
-    & .dp__inner_nav {
+    .dp__inner_nav {
       color: #fff;
-      border: #fff solid 0.25px;
-      border-radius: 0.5rem;
+      border: #fff solid 1px;
+      border-radius: 20px;
       padding: 4px;
+      width: 52px;
+      height: 52px;
+      background: none;
 
-      &:hover {
-        background: none;
+      &.dp__inner_nav_disabled {
+        color: rgba(255, 255, 255, 0.5);
+        border: rgba(255, 255, 255, 0.5) solid 1px;
       }
     }
   }
+
+  button[aria-label='Previous month'] {
+    order: 1;
+  }
   button[aria-label='Next month'] {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     order: 2;
-    width: 100px;
-
-    & .dp__inner_nav {
-      color: #fff;
-      border: #fff solid 0.25px;
-      border-radius: 0.5rem;
-      padding: 4px;
-
-      &:hover {
-        background: none;
-      }
-    }
   }
 
   .dp__month_year_wrap {
     flex-direction: column;
+    pointer-events: none;
 
     button[aria-label='Open months overlay'] {
-      pointer-events: none;
-      font-size: large;
+      font-size: 34px;
       font-weight: bold;
+      justify-content: flex-start;
+      color: rgba(255, 255, 255, 1);
     }
 
     button[aria-label='Open years overlay'] {
-      font-size: small;
-      font-weight: lighter;
-      pointer-events: none;
+      height: fit-content;
+      width: fit-content;
+      padding: 8px;
+      font-size: medium;
+      font-weight: normal;
+      color: rgba(255, 255, 255, 0.5);
     }
   }
 }
 
 .dp__calendar {
   .dp__calendar_header {
-    font-weight: lighter;
-    color: #ededed;
+    font-size: 16px;
+    font-weight: normal;
+    color: rgba(255, 255, 255, 0.5);
   }
 
   .dp__calendar_header_separator {
@@ -164,18 +162,64 @@ export default defineComponent({
       color: #1f49d1;
       border-radius: 50%;
       background-color: #fff;
+      overflow: visible;
+      z-index: 2;
+
+      &::after {
+        content: '';
+        position: absolute;
+        width: 24px;
+        height: 40px;
+        right: -8px;
+        background-color: #577cdd;
+        z-index: 0;
+        mix-blend-mode: color;
+      }
     }
 
     .dp__range_between {
       color: #fff;
       border: none;
       background-color: #577cdd;
+      overflow: visible;
+      z-index: 2;
+
+      &::after {
+        content: '';
+        position: absolute;
+        width: 50px;
+        height: 40px;
+        left: 0;
+        background-color: #577cdd;
+        z-index: 0;
+        mix-blend-mode: color;
+      }
     }
 
     .dp__range_end {
       color: #1f49d1;
       border-radius: 50%;
       background-color: #fff;
+      overflow: visible;
+      z-index: 2;
+
+      &::before {
+        content: '';
+        position: absolute;
+        width: 24px;
+        height: 40px;
+        left: -6px;
+        background-color: #577cdd;
+        z-index: 0;
+        mix-blend-mode: color;
+      }
+    }
+
+    .dp__range_start.dp__range_end {
+      &::before,
+      &::after {
+        display: none;
+      }
     }
   }
 }
