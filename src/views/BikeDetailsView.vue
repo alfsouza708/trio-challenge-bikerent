@@ -94,7 +94,12 @@ export default defineComponent({
       this.dateToRent = dateToRent
 
       if (this.isDateSelected && this.dateToRent) {
-        this.rentAmountDetails = await this.fetchBikeAmount(this.rentDetails)
+        try {
+          this.rentAmountDetails = await this.fetchBikeAmount(this.rentDetails)
+        } catch (e) {
+          this.isDateSelected = false
+          alert(e)
+        }
       }
     },
 
