@@ -5,10 +5,9 @@ import type { BikeRent, BikeRentDetails } from '@/core/api/modules/typings/bike'
 import { defineComponent } from 'vue'
 
 import { LoadingSpinner } from '@/components/loading'
-import { ImageLazy } from '@/components/image'
 import { BikeImageSelector, BikeSpecs, type BikeSpecsProps, BikePrice, BikeBookmark } from '@/components/bike'
 import { Chip } from '@/components/chip'
-import { BookingAddressMap, BookingPricing, BookingDate } from '@/components/booking'
+import { BookingAddressMap, BookingPricing, BookingDate, BookingFeedback } from '@/components/booking'
 import { CurrencyCode, USER_ID } from '@/core/config'
 
 import { BreadcrumbsLayout } from '@/components/layout'
@@ -31,8 +30,8 @@ export default defineComponent({
     BookingAddressMap,
     BookingPricing,
     BookingDate,
+    BookingFeedback,
     BikeBookmark,
-    ImageLazy,
     NotFound
   },
   metaInfo() {
@@ -182,7 +181,7 @@ export default defineComponent({
         </div>
 
         <div>
-          <div v-if="!isBikeRented" class="card p-8">
+          <div v-if="isBikeRented" class="card p-8">
             <div class="flex justify-center items-center flex-col">
               <h2 class="self-start mb-4">Select date and time</h2>
               <booking-date class="self-start" @update:date="handleEmit" />
@@ -203,12 +202,12 @@ export default defineComponent({
             </div>
           </div>
 
-          <div v-else class="card p-8 flex flex-col justify-center items-center">
-            <h2 class="font-bold text-2xl">Thank you!</h2>
-            <p class="font-normal text-md">Your bike is booked.</p>
-            <image-lazy :src="images[0]" class="image--thanks-card" />
-            <p class="font-semibold text-md">{{ data!.name }}</p>
-            <chip color="secondary" size="sm">{{ data!.type }}</chip>
+          <div v-else>
+            <booking-feedback
+              :image-to-render="images[0]"
+              :bike-name="data!.name"
+              :chip-text="data!.type"
+            ></booking-feedback>
           </div>
         </div>
       </div>
@@ -220,9 +219,6 @@ export default defineComponent({
 .page--details {
   position: relative;
 
-  .image--thanks-card {
-    width: 185px;
-  }
   .grid {
     @include breakpoint('lg') {
       grid-template-columns: minmax(400px, 67%) 1fr;
