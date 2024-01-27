@@ -44,6 +44,15 @@ export default defineStore({
       const result = await bike.amount(details)
 
       return result
+    },
+
+    /**
+     * return data after rent a bike
+     */
+    async rentBike(details: bike.BikeRentDetails) {
+      const result = await bike.rent(details)
+
+      return result
     }
   }
 })

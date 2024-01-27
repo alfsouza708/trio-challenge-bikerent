@@ -5,6 +5,7 @@ import type { BikeRent, BikeRentDetails } from '@/core/api/modules/typings/bike'
 import { defineComponent } from 'vue'
 
 import { LoadingSpinner } from '@/components/loading'
+import { ImageLazy } from '@/components/image'
 import { BikeImageSelector, BikeSpecs, type BikeSpecsProps, BikePrice, BikeBookmark } from '@/components/bike'
 import { Chip } from '@/components/chip'
 import { BookingAddressMap, BookingPricing, BookingDate } from '@/components/booking'
@@ -31,6 +32,7 @@ export default defineComponent({
     BookingPricing,
     BookingDate,
     BikeBookmark,
+    ImageLazy,
     NotFound
   },
   metaInfo() {
@@ -46,6 +48,7 @@ export default defineComponent({
     mockAddress: '745 Atlantic Ave, Boston, MA 02111, United States',
     isBookmarked: false,
     isDateSelected: false,
+    isBikeRented: false,
     dateToRent: [],
     rentAmountDetails: {}
   }),
@@ -87,7 +90,11 @@ export default defineComponent({
     }
   },
   methods: {
-    ...mapActions(useBikeStore, { fetchBikeList: 'fetchList', fetchBikeAmount: 'fetchAmount' }),
+    ...mapActions(useBikeStore, {
+      fetchBikeList: 'fetchList',
+      fetchBikeAmount: 'fetchAmount',
+      rentBike: 'rentBike'
+    }),
 
     async handleEmit({ isSelected, dateToRent }: DatePickerData) {
       this.isDateSelected = isSelected
@@ -104,10 +111,12 @@ export default defineComponent({
     },
 
     handleAddBooking() {
-      // TODO: add booking action
-
-      // eslint-disable-next-line no-console
-      console.log('booking action')
+      try {
+        this.rentBike(this.rentDetails)
+        this.isBikeRented = true
+      } catch (e) {
+        alert(e)
+      }
     }
   }
 })
@@ -173,7 +182,7 @@ export default defineComponent({
         </div>
 
         <div>
-          <div class="card p-8">
+          <div v-if="!isBikeRented" class="card p-8">
             <div class="flex justify-center items-center flex-col">
               <h2 class="self-start mb-4">Select date and time</h2>
               <booking-date class="self-start" @update:date="handleEmit" />
@@ -181,8 +190,6 @@ export default defineComponent({
 
             <div v-if="isDateSelected" class="mt-5">
               <h3 class="text-base mb-4">Booking Overview</h3>
-
-              <p>{{ dateToRent }}</p>
 
               <div class="divider" />
 
@@ -195,6 +202,14 @@ export default defineComponent({
               <button class="button button--primary w-full py-5" @click="handleAddBooking">Add to booking</button>
             </div>
           </div>
+
+          <div v-else class="card p-8 flex flex-col justify-center items-center">
+            <h2 class="font-bold text-2xl">Thank you!</h2>
+            <p class="font-normal text-md">Your bike is booked.</p>
+            <image-lazy :src="images[0]" class="image--thanks-card" />
+            <p class="font-semibold text-md">{{ data!.name }}</p>
+            <chip color="secondary" size="sm">{{ data!.type }}</chip>
+          </div>
         </div>
       </div>
     </template>
@@ -205,6 +220,9 @@ export default defineComponent({
 .page--details {
   position: relative;
 
+  .image--thanks-card {
+    width: 185px;
+  }
   .grid {
     @include breakpoint('lg') {
       grid-template-columns: minmax(400px, 67%) 1fr;
