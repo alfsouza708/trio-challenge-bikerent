@@ -27,13 +27,14 @@ export default defineStore({
      * fetchs list of bikes available
      */
     async fetchList() {
-      const result = await bike.list(true)
-
-      result.forEach((i) => {
-        this.items = {
-          ...this.items,
-          [i.id]: i
-        }
+      await bike.list(true).then((result) => {
+        this.items = {}
+        result.forEach((i) => {
+          this.items = {
+            ...this.items,
+            [i.id]: i
+          }
+        })
       })
     },
 
