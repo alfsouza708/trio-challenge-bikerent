@@ -1,0 +1,12 @@
+// Vitest Snapshot v1
+
+exports[`BookingFeedback > renders correctly 1`] = `
+"<section class=\\"booking-feedback card\\">
+  <h2 class=\\"font-bold text-2xl\\">Thank you!</h2>
+  <p class=\\"font-normal text-md\\">Your bike is booked.</p><img class=\\"image image--lazy image--thanks-card\\" data-v-ff3f7011=\\"\\">
+  <p class=\\"font-semibold text-md\\">Murazik, Thiel and Robel</p>
+  <div class=\\"chip chip--sm chip--secondary\\" data-v-221b4c58=\\"\\">
+    <div class=\\"chip__content\\" data-v-221b4c58=\\"\\">Cyclocross Bicycle</div>
+  </div>
+</section>"
+`;

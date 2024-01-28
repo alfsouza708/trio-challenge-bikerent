@@ -1,0 +1,3 @@
+// Vitest Snapshot v1
+
+exports[`BookingAddressMap > renders correctly 1`] = `"<section class=\\"booking-address-map\\" data-v-544cf0d6=\\"\\"><iframe src=\\"https://maps.google.com/maps?width=750&amp;height=400&amp;hl=en&amp;q=745 Atlantic Ave, Boston, MA 02111, United States&amp;ie=UTF8&amp;iwloc=B&amp;output=embed&amp;t=&amp;z=15\\" height=\\"400\\" width=\\"100%\\" frameborder=\\"0\\" scrolling=\\"no\\" marginheight=\\"0\\" marginwidth=\\"0\\" seamless=\\"\\" data-v-544cf0d6=\\"\\"></iframe></section>"`;
