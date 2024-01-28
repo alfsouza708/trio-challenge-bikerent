@@ -80,7 +80,6 @@ export default defineComponent({
       }
     }
   },
-  watch: {},
   async beforeMount() {
     if (!this.data) {
       this.isLoading = true
@@ -145,6 +144,7 @@ export default defineComponent({
 
             <div class="divider" />
 
+            <!--  MOBILE STARTS HERE   -->
             <article>
               <div class="flex">
                 <div>
@@ -184,7 +184,7 @@ export default defineComponent({
           <div v-if="!isBikeRented" class="card p-8">
             <div class="flex justify-center items-center flex-col">
               <h2 class="self-start mb-4">Select date and time</h2>
-              <booking-date class="self-start" @update:date="handleEmit" />
+              <booking-date class="lg:self-start w-full" @update:date="handleEmit" />
             </div>
 
             <div v-if="isDateSelected" class="mt-5">

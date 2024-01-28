@@ -11,7 +11,9 @@ export default defineComponent({
   data() {
     return {
       date: null,
-      selecting: false
+      selecting: false,
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight * 0.8
     }
   },
   computed: {
@@ -20,20 +22,38 @@ export default defineComponent({
     },
     maxDate() {
       return moment().add(3, 'M').toDate()
+    },
+    isMobile() {
+      return this.windowWidth <= 475
     }
   },
   watch: {
     selecting() {
-      this.date && !this.selecting
+      this.date && !this.selecting && !this.isMobile
         ? this.$emit('update:date', { isSelected: true, dateToRent: this.formatDates(this.date) })
         : this.$emit('update:date', { isSelected: false, dateToRent: [] })
     }
   },
+  mounted() {
+    window.addEventListener('resize', () => {
+      this.windowWidth = window.innerWidth
+    })
+  },
   methods: {
+    handleModelUpdate() {
+      if (this.isMobile && this.date) {
+        this.$emit('update:date', { isSelected: true, dateToRent: this.formatDates(this.date) })
+      }
+    },
     formatDates(date: Date[]) {
       if (date) {
         return date.map((date) => moment(date).format('YYYY-MM-DD'))
       }
+    },
+    formatDatesMobile(date: Date[]) {
+      const datesFormated = date.map((date) => moment(date).format('MMM/DD'))
+
+      return `From ${datesFormated[0]} to ${datesFormated[1]}`
     }
   }
 })
@@ -44,20 +64,32 @@ export default defineComponent({
     <vue-date-picker
       v-model="date"
       uid="date-selector"
-      inline
-      auto-apply
+      :inline="!isMobile"
+      :auto-apply="!isMobile"
+      :teleport="true"
       range
       month-name-format="long"
       :hide-navigation="['time']"
       :min-date="minDate"
       :max-date="maxDate"
       prevent-min-max-navigation
+      input-class-name="dp-custom-input"
+      :clearable="false"
+      :format="formatDatesMobile"
+      :action-row="{ showCancel: false }"
+      :config="{
+        modeHeight: windowHeight,
+        onClickOutside: () => {
+          isMobile ? true : false
+        }
+      }"
       @range-start="() => (selecting = true)"
       @range-end="
         () => {
-          if (selecting) selecting = false
+          if (selecting && !isMobile) selecting = false
         }
       "
+      @update:model-value="handleModelUpdate"
     />
   </section>
 </template>
@@ -76,13 +108,65 @@ export default defineComponent({
   --dp-background-color: #1f49d1;
   --dp-text-color: #ffffff;
   --dp-disabled-color-text: rgba(255, 255, 255, 0.5);
-  --dp-icon-color: #ffffff;
+  --dp-icon-color: #1f49d1;
   --dp-primary-color: #577cdd;
   --dp-border-color-hover: #ffffff;
   --dp-hover-icon-color: #1f49d1;
   --dp-hover-text-color: #1f49d1;
   --dp-range-between-dates-background-color: var(--dp-hover-color, #c1cff2);
   --dp-disabled-color: rgba(0, 0, 0, 0);
+}
+
+.dp-custom-input {
+  color: black;
+  background-color: #fff;
+}
+
+.dp__action_row {
+  justify-content: center;
+
+  .dp__action_buttons {
+    margin: 0;
+  }
+
+  .dp__action_select {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffd775;
+    color: black;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 20px;
+    margin: 0;
+    width: 327px;
+    height: 60px;
+  }
+
+  .dp__selection_preview {
+    display: none;
+  }
+}
+
+.dp__action_buttons {
+  margin: 0;
+}
+
+.dp__action_select {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ffd775;
+  color: black;
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0;
+  width: 327px;
+  height: 60px;
+}
+
+.dp__selection_preview {
+  display: none;
 }
 
 .dp__month_year_row {
