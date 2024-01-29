@@ -12,8 +12,7 @@ export default defineComponent({
     return {
       date: null,
       selecting: false,
-      windowWidth: window.innerWidth,
-      windowHeight: window.innerHeight * 0.8
+      windowWidth: window.innerWidth
     }
   },
   computed: {
@@ -77,7 +76,6 @@ export default defineComponent({
       :format="formatDatesMobile"
       :action-row="{ showCancel: false }"
       :config="{
-        modeHeight: windowHeight,
         onClickOutside: () => {
           isMobile ? true : false
         }

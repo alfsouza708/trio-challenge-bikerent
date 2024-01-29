@@ -5,6 +5,7 @@ import type { BikeRent, BikeRentDetails } from '@/core/api/modules/typings/bike'
 import { defineComponent } from 'vue'
 
 import { LoadingSpinner } from '@/components/loading'
+import { Icon } from '@/components/icon'
 import { BikeImageSelector, BikeSpecs, type BikeSpecsProps, BikePrice, BikeBookmark } from '@/components/bike'
 import { Chip } from '@/components/chip'
 import { BookingAddressMap, BookingPricing, BookingDate, BookingFeedback } from '@/components/booking'
@@ -32,6 +33,7 @@ export default defineComponent({
     BookingDate,
     BookingFeedback,
     BikeBookmark,
+    Icon,
     NotFound
   },
   metaInfo() {
@@ -48,6 +50,7 @@ export default defineComponent({
     isBookmarked: false,
     isDateSelected: false,
     isBikeRented: false,
+    isBooking: false,
     dateToRent: [],
     rentAmountDetails: {},
     windowWidth: window.innerWidth
@@ -118,8 +121,9 @@ export default defineComponent({
 
     handleAddBooking() {
       try {
-        this.rentBike(this.rentDetails)
-        this.isBikeRented = true
+        this.rentBike(this.rentDetails).then(() => {
+          this.isBikeRented = true
+        })
       } catch (e) {
         alert(e)
       }
@@ -144,7 +148,7 @@ export default defineComponent({
     </template>
     <template v-else>
       <div class="grid gap-x-6 grid-cols-1">
-        <div>
+        <div v-if="!isBooking">
           <div class="card p-8" :class="{ 'mobile-view': isMobile }">
             <bike-image-selector :images="images" :is-mobile="isMobile" class="mb-8" />
 
@@ -189,7 +193,65 @@ export default defineComponent({
           </div>
         </div>
 
-        <div v-if="!isMobile">
+        <div v-if="isMobile">
+          <section v-if="isBooking" class="booking-preview">
+            <div class="flex justify-start">
+              <button class="button button--primary back-button" @click="isBooking = false">
+                <icon type="solid">chevron-left</icon>
+              </button>
+              <h1 class="text-4xl ml-8">Booking</h1>
+            </div>
+
+            <div class="card my-8 px-2 flex justify-start">
+              <bike-image-selector :images="images" :is-mobile="isMobile" class="mb-8" />
+              <div class="flex flex-col justify-center items-start">
+                <h2 class="font-bold text-xl mb-2 lg:text-4xl">{{ data!.name }}</h2>
+                <chip color="secondary" size="sm">{{ data!.type }}</chip>
+                <bike-price :price="data!.rate" :currency="currency" rate="daily" class="ml-auto" />
+              </div>
+            </div>
+
+            <div class="flex justify-center items-center flex-col">
+              <h2 class="self-start mb-4">Select date and time</h2>
+              <booking-date class="lg:self-start w-full" @update:date="handleEmit" />
+            </div>
+
+            <div v-if="isDateSelected" class="mt-5">
+              <h3 class="text-base mb-4">Booking Overview</h3>
+
+              <div class="divider" />
+
+              <booking-pricing
+                :rent-amount-details="(rentAmountDetails as BikeRent)"
+                :currency="currency"
+                class="mb-8"
+              />
+
+              <div class="flex justify-center items-center mx-4 booking-button">
+                <button class="button button--primary w-full py-5 mb-6" @click="handleAddBooking">
+                  Add to booking
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <div v-if="isBikeRented">
+            <div class="modal">
+              <div class="modal-body">
+                <booking-feedback
+                  :image-to-render="images[0]"
+                  :bike-name="data!.name"
+                  :chip-text="data!.type"
+                ></booking-feedback>
+                <button class="button button--primary w-full py-5 font-bold">
+                  <router-link :to="{ name: 'home' }">Go to Home Page</router-link>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div v-else>
           <div v-if="!isBikeRented" class="card p-8">
             <div class="flex justify-center items-center flex-col">
               <h2 class="self-start mb-4">Select date and time</h2>
@@ -220,9 +282,10 @@ export default defineComponent({
           </div>
         </div>
 
-        <div v-if="isMobile" class="rent-button flex">
+        <!-- BOOKMARK AND RENT BIKE BUTTON -->
+        <div v-if="isMobile && !isBooking" class="rent-button flex">
           <bike-bookmark v-model:active="isBookmarked" :width="70" size="2xl" outlined />
-          <button class="button button--secondary w-full py-5 mobile-view ml-3" @click="handleAddBooking">
+          <button class="button button--secondary w-full py-5 mobile-view ml-3" @click="isBooking = true">
             Rent Bike
           </button>
         </div>
@@ -247,7 +310,7 @@ export default defineComponent({
       background-color: #1f49d1;
       color: white;
       padding: 24px;
-      z-index: 10;
+      z-index: 1;
     }
     .mobile-view {
       color: white;
@@ -269,6 +332,54 @@ export default defineComponent({
         color: black;
         font-size: 1rem;
         font-weight: bold;
+      }
+    }
+
+    .modal {
+      position: fixed;
+      z-index: 20;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+
+      .modal-body {
+        margin: 16vh auto;
+        max-width: 90%;
+        background: white;
+        border-radius: 20px;
+        padding: 0 20px 38px 20px;
+
+        .booking-feedback {
+          border: none;
+        }
+      }
+    }
+    .booking-preview {
+      background: white;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      padding: 24px;
+
+      .back-button {
+        background: transparent;
+        color: black;
+        border: #ededed solid 1px;
+      }
+
+      .bike-image-selector {
+        width: 100px;
+        padding: 0;
+        margin-right: 12px;
+      }
+
+      .bike__price {
+        margin-left: 0;
+        margin-top: 12px;
       }
     }
   }
