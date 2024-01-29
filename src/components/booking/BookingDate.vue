@@ -19,9 +19,6 @@ export default defineComponent({
     minDate() {
       return moment().toDate()
     },
-    maxDate() {
-      return moment().add(3, 'M').toDate()
-    },
     isMobile() {
       return this.windowWidth <= 475
     }
@@ -39,8 +36,14 @@ export default defineComponent({
     })
   },
   methods: {
+    onRangeStart() {
+      this.selecting = true
+    },
+    onRangeEnd() {
+      this.selecting = false
+    },
     handleModelUpdate() {
-      if (this.isMobile && this.date) {
+      if (this.isMobile && this.date && !this.selecting) {
         this.$emit('update:date', { isSelected: true, dateToRent: this.formatDates(this.date) })
       }
     },
@@ -69,7 +72,6 @@ export default defineComponent({
       month-name-format="long"
       :hide-navigation="['time']"
       :min-date="minDate"
-      :max-date="maxDate"
       prevent-min-max-navigation
       input-class-name="dp-custom-input"
       :clearable="false"
@@ -80,12 +82,8 @@ export default defineComponent({
           isMobile ? true : false
         }
       }"
-      @range-start="() => (selecting = true)"
-      @range-end="
-        () => {
-          if (selecting && !isMobile) selecting = false
-        }
-      "
+      @range-start="onRangeStart"
+      @range-end="onRangeEnd"
       @update:model-value="handleModelUpdate"
     />
   </section>
