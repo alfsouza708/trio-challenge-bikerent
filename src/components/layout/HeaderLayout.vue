@@ -25,10 +25,10 @@ export default defineComponent({
                 </li>
 
                 <!--    REMOVED FROM DISPLAY: BREAKING RESPONSIVE          -->
-                <!-- <li>
+                <li>
                   <a href="#" class="button button--primary button--text font-semibold">Log in</a>
                 </li>
-                <li><a href="#" class="button button--secondary font-semibold">Sign up</a></li> -->
+                <li><a href="#" class="button button--secondary font-semibold">Sign up</a></li>
               </menu>
             </nav>
           </div>
