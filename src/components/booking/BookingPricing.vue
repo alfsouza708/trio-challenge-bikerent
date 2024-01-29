@@ -1,5 +1,5 @@
 <script lang="ts">
-import { PRICING_SERVICE_FEE } from '@/core/config'
+import type { BikeRent } from '@/core/api/modules/typings/bike'
 import { defineComponent, type PropType } from 'vue'
 import { Icon } from '@/components/icon/'
 import type { CurrencyCode } from '@/core/config'
@@ -9,8 +9,8 @@ export default defineComponent({
   name: 'BookingPricing',
   components: { Icon },
   props: {
-    price: {
-      type: Number,
+    rentAmountDetails: {
+      type: Object as PropType<BikeRent>,
       required: true
     },
     currency: {
@@ -19,11 +19,14 @@ export default defineComponent({
     }
   },
   computed: {
-    serviceFee(): number {
-      return this.price * PRICING_SERVICE_FEE
+    rentAmount(): number {
+      return this.rentAmountDetails.rentAmount
     },
-    total(): number {
-      return this.price + this.serviceFee
+    fee(): number {
+      return this.rentAmountDetails.fee
+    },
+    totalAmount(): number {
+      return this.rentAmountDetails.totalAmount
     }
   },
   methods: {
@@ -41,16 +44,16 @@ export default defineComponent({
         Subtotal
         <icon type="solid" size="xs" class="ml-1">circle-info</icon>
       </div>
-      <div class="text-right">{{ formatPrice(price) }}</div>
+      <div class="text-right">{{ formatPrice(rentAmount) }}</div>
 
       <div class="flex items-center">
         Service Fee
         <icon type="solid" size="xs" class="ml-1">circle-info</icon>
       </div>
-      <div class="text-right">{{ formatPrice(serviceFee) }}</div>
+      <div class="text-right">{{ formatPrice(fee) }}</div>
 
       <div class="flex items-center text-base">Total</div>
-      <div class="text-right text-2xl font-bold">{{ formatPrice(total) }}</div>
+      <div class="text-right text-2xl font-bold">{{ formatPrice(totalAmount) }}</div>
     </div>
   </section>
 </template>

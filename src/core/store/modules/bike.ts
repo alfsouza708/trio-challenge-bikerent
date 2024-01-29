@@ -27,14 +27,33 @@ export default defineStore({
      * fetchs list of bikes available
      */
     async fetchList() {
-      const result = await bike.list(true)
-
-      result.forEach((i) => {
-        this.items = {
-          ...this.items,
-          [i.id]: i
-        }
+      await bike.list(true).then((result) => {
+        this.items = {}
+        result.forEach((i) => {
+          this.items = {
+            ...this.items,
+            [i.id]: i
+          }
+        })
       })
+    },
+
+    /**
+     * return amount for possible rent
+     */
+    async fetchAmount(details: bike.BikeRentDetails) {
+      const result = await bike.amount(details)
+
+      return result
+    },
+
+    /**
+     * return data after rent a bike
+     */
+    async rentBike(details: bike.BikeRentDetails) {
+      const result = await bike.rent(details)
+
+      return result
     }
   }
 })

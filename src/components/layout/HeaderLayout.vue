@@ -7,8 +7,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <header class="header container mx-auto">
-    <div class="header__content mx-auto md:px-24 py-10">
+  <header class="header mx-auto">
+    <div class="header__content container mx-auto md:px-24 py-10">
       <div class="container mx-auto">
         <div class="flex">
           <h1 class="my-0 text-5xl font-extrabold">
@@ -23,7 +23,11 @@ export default defineComponent({
                     >Manhattan <i class="fa-solid fa-location-dot"></i
                   ></a>
                 </li>
-                <li><a href="#" class="button button--primary button--text font-semibold">Log in</a></li>
+
+                <!--    REMOVED FROM DISPLAY: BREAKING RESPONSIVE          -->
+                <li>
+                  <a href="#" class="button button--primary button--text font-semibold">Log in</a>
+                </li>
                 <li><a href="#" class="button button--secondary font-semibold">Sign up</a></li>
               </menu>
             </nav>

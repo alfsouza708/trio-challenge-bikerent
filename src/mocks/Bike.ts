@@ -1,4 +1,4 @@
-import type { BikeRentDetails, BikeReturnDetails } from '@/core/api/modules/bike'
+import type { BikeRent, BikeRentDetails, BikeReturnDetails } from '@/core/api/modules/bike'
 
 const [mockDate] = new Date().toISOString().split('T')
 
@@ -24,6 +24,12 @@ const mockedBike: Bike = {
   ratings: 4.8
 }
 
+const mockedPricingDetails: BikeRent = {
+  fee: 10,
+  rentAmount: 120,
+  totalAmount: 130
+}
+
 const mockBikeRentDetails: BikeRentDetails = {
   userId: 1,
   bikeId: mockedBike.id,
@@ -38,4 +44,14 @@ const mockedBikeReturnDetails: BikeReturnDetails = {
 
 const mockedBikeList = [mockedBike, mockedBike, mockedBike, mockedBike]
 
-export { mockedBike, mockedBikeList, mockedImageUrls, mockBikeRentDetails, mockedBikeReturnDetails }
+const mockedAddress = '745 Atlantic Ave, Boston, MA 02111, United States'
+
+export {
+  mockedBike,
+  mockedBikeList,
+  mockedImageUrls,
+  mockBikeRentDetails,
+  mockedBikeReturnDetails,
+  mockedAddress,
+  mockedPricingDetails
+}

@@ -1,0 +1,17 @@
+// Vitest Snapshot v1
+
+exports[`BookingDate > renders correctly 1`] = `
+"<section class=\\"booking-date\\">
+  <div class=\\"dp__main dp__theme_light dp__flex_display\\" data-datepicker-instance=\\"\\">
+    <div>
+      <!---->
+      <!---->
+    </div>
+    <!--teleport start-->
+    <transition-stub name=\\"dp-menu-appear-bottom\\" appear=\\"false\\" persisted=\\"false\\" css=\\"false\\">
+      <!---->
+    </transition-stub>
+    <!--teleport end-->
+  </div>
+</section>"
+`;
