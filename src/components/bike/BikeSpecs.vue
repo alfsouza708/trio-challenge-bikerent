@@ -54,5 +54,13 @@ export default defineComponent({
       @apply .font-normal, .text-sm, .mb-1;
     }
   }
+
+  @media only screen and (max-width: 600px) {
+    background-color: rgb(255, 255, 255);
+    color: black;
+    margin-left: 48px;
+    margin-right: 48px;
+    top: 32px;
+  }
 }
 </style>

@@ -63,11 +63,10 @@ export default defineComponent({
   <section class="booking-date">
     <vue-date-picker
       v-model="date"
-      uid="date-selector"
       :inline="!isMobile"
       :auto-apply="!isMobile"
-      :teleport="true"
       range
+      teleport-center
       month-name-format="long"
       :hide-navigation="['time']"
       :min-date="minDate"

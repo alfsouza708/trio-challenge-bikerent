@@ -29,3 +29,11 @@ export default defineComponent({
     </div>
   </main>
 </template>
+
+<style lang="scss">
+.main {
+  @media only screen and (max-width: 600px) {
+    padding: 0;
+  }
+}
+</style>
